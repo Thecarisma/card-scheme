@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
@@ -59,7 +60,7 @@ public class CardCacheService {
         return cachedCard.get();
     }
 
-    private CardCache fromBinListApi(String cardNumber) {
+    public CardCache fromBinListApi(String cardNumber) {
         CardCache cardCache = null;
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -67,22 +68,30 @@ public class CardCacheService {
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
         String url = "https://lookup.binlist.net/" + cardNumber;
-        ResponseEntity<BinListResponse> response  = restTemplate.exchange(url, HttpMethod.GET, entity, BinListResponse.class);
-        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            cardCache = new CardCache();
-            cardCache.setCardNumber(cardNumber);
-            cardCache.setType(response.getBody().getType());
-            cardCache.setScheme(response.getBody().getScheme());
-            cardCache.setBank(response.getBody().getBank().getName());
+        try {
+            ResponseEntity<BinListResponse> response  = restTemplate.exchange(url, HttpMethod.GET, entity, BinListResponse.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                cardCache = new CardCache();
+                cardCache.setCardNumber(cardNumber);
+                cardCache.setType(response.getBody().getType());
+                cardCache.setScheme(response.getBody().getScheme());
+                cardCache.setBank(response.getBody().getBank().getName());
+            }
+        } catch (HttpStatusCodeException exception) {
+            exception.printStackTrace();
         }
         return cardCache;
+    }
+
+    public void publishString(String topic, String value) {
+        kafkaTemplate.send(topic, value);
     }
 
     // @Async not working
     public void publishToKafka(CardCache cardCache) throws JsonProcessingException {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(cardCache);
-        new Thread(() -> kafkaTemplate.send(TOPICS, json)).start();
+        new Thread(() -> publishString(TOPICS, json)).start();
     }
 
 }

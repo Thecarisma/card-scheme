@@ -1,17 +1,16 @@
 package com.bankwithmint.controller;
 
+import com.bankwithmint.service.CardCacheService;
+import com.bankwithmint.service.StatService;
 import com.bankwithmint.model.CardCache;
 import com.bankwithmint.model.PagedResponse;
 import com.bankwithmint.model.SingleResponse;
 import com.bankwithmint.model.Stat;
-import com.bankwithmint.service.CardCacheService;
-import com.bankwithmint.service.StatService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

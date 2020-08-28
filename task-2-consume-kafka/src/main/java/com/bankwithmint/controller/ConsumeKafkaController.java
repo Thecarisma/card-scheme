@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Adewale Azeez <azeezadewale98@gmail.com>
  * @date 28-Aug-20 11:41 AM

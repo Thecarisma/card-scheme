@@ -1,12 +1,5 @@
 package com.bankwithmint.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 /**
  * @author Adewale Azeez <azeezadewale98@gmail.com>
  * @date 28-Aug-20 07:37 AM
