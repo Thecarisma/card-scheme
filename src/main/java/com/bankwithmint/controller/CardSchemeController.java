@@ -1,15 +1,15 @@
 package com.bankwithmint.controller;
 
+import com.bankwithmint.model.CardCache;
 import com.bankwithmint.model.SingleResponse;
+import com.bankwithmint.service.CardCacheService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -21,9 +21,13 @@ import java.util.Optional;
 @RequestMapping("/card-scheme")
 public class CardSchemeController {
 
+    @Autowired
+    CardCacheService cardCacheService;
+
     @RequestMapping(value = "/verify/{cardNumber}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> listFriends(@RequestHeader("Authorization") String authorization, Pageable pageable) throws JsonProcessingException {
-        return new ResponseEntity<>(new SingleResponse<>(false, "nothing"), HttpStatus.FOUND);
+    public ResponseEntity<?> verifyCard(@PathVariable("cardNumber") String cardNumber) throws JsonProcessingException {
+        CardCache cardCache = cardCacheService.verifyCard(cardNumber);
+        return new ResponseEntity<>(new SingleResponse<>(cardCache != null, cardCache), HttpStatus.FOUND);
     }
 
 }

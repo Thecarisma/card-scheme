@@ -11,39 +11,13 @@ import javax.persistence.Table;
  * @author Adewale Azeez <azeezadewale98@gmail.com>
  * @date 28-Aug-20 07:37 AM
  */
-@Entity
-@Table(name = "card_cache")
-public class Card {
-
-    @Id
-    @JsonIgnore
-    long id;
-
-    @JsonIgnore
-    @Column(name = "card_number")
-    String cardNumber;
+public class BinListResponse {
 
     String scheme;
 
     String type;
 
-    String bank;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
+    Bank bank;
 
     public String getScheme() {
         return scheme;
@@ -61,11 +35,11 @@ public class Card {
         this.type = type;
     }
 
-    public String getBank() {
+    public Bank getBank() {
         return bank;
     }
 
-    public void setBank(String bank) {
+    public void setBank(Bank bank) {
         this.bank = bank;
     }
 }
