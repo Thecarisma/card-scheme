@@ -9,11 +9,11 @@ import javax.persistence.Table;
 
 /**
  * @author Adewale Azeez <azeezadewale98@gmail.com>
- * @date 28-Aug-20 07:37 AM
+ * @date 28-Aug-20 07:44 AM
  */
 @Entity
-@Table(name = "card_cache")
-public class Card {
+@Table(name = "card_hit")
+public class CardHit {
 
     @Id
     @JsonIgnore
@@ -23,11 +23,7 @@ public class Card {
     @Column(name = "card_number")
     String cardNumber;
 
-    String scheme;
-
-    String type;
-
-    String bank;
+    long hitCounter;
 
     public long getId() {
         return id;
@@ -45,27 +41,11 @@ public class Card {
         this.cardNumber = cardNumber;
     }
 
-    public String getScheme() {
-        return scheme;
+    public long getHitCounter() {
+        return hitCounter;
     }
 
-    public void setScheme(String scheme) {
-        this.scheme = scheme;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getBank() {
-        return bank;
-    }
-
-    public void setBank(String bank) {
-        this.bank = bank;
+    public void setHitCounter(long hitCounter) {
+        this.hitCounter = hitCounter;
     }
 }
