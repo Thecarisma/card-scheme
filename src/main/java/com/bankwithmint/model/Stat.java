@@ -12,8 +12,8 @@ import javax.persistence.Table;
  * @date 28-Aug-20 07:44 AM
  */
 @Entity
-@Table(name = "card_hit")
-public class CardHit {
+@Table(name = "stat")
+public class Stat {
 
     @Id
     @JsonIgnore
@@ -23,6 +23,7 @@ public class CardHit {
     @Column(name = "card_number")
     String cardNumber;
 
+    @Column(name = "hit_counter")
     long hitCounter;
 
     public long getId() {

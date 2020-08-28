@@ -16,11 +16,6 @@ public class PagedResponse<T> {
 
     T payload;
 
-    public PagedResponse(boolean success, T payload) {
-        this.success = success;
-        this.payload = payload;
-    }
-
     public boolean isSuccess() {
         return success;
     }

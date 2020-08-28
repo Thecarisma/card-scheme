@@ -11,7 +11,7 @@ CREATE TABLE `card_cache` (
 );
 
 -- Status Hit Stat
-CREATE TABLE `card_hit` (
+CREATE TABLE `stat` (
     `id` INT NOT NULL AUTO_INCREMENT ,
     `card_number` VARCHAR(50) NOT NULL ,
     `hit_counter` INT NOT NULL ,
