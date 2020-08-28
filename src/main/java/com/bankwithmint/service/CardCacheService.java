@@ -17,7 +17,6 @@ import java.util.Optional;
  * @date 28-Aug-20 08:15 AM
  */
 @Service
-@EnableAsync
 public class CardCacheService {
 
     @Autowired
