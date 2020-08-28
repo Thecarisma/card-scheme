@@ -6,6 +6,7 @@ import com.bankwithmint.repository.CardCacheRepository;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,10 +17,14 @@ import java.util.Optional;
  * @date 28-Aug-20 08:15 AM
  */
 @Service
+@EnableAsync
 public class CardCacheService {
 
     @Autowired
     CardCacheRepository cardCacheRepository;
+
+    @Autowired
+    StatService statService;
 
     RestTemplate restTemplate = new RestTemplate();
 
@@ -33,6 +38,7 @@ public class CardCacheService {
      * @return
      */
     public CardCache verifyCard(String cardNumber) {
+        statService.logCardHit(cardNumber);
         Optional<CardCache> cachedCard = cardCacheRepository.findByCardNumber(cardNumber);
         if (!cachedCard.isPresent()) {
             CardCache cardCache = fromBinListApi(cardNumber);

@@ -19,7 +19,6 @@ public class Stat {
     @JsonIgnore
     long id;
 
-    @JsonIgnore
     @Column(name = "card_number")
     String cardNumber;
 
