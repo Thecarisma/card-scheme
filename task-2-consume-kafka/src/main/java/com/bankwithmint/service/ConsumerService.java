@@ -1,5 +1,6 @@
 package com.bankwithmint.service;
 
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,4 +9,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ConsumerService {
+
+    @KafkaListener(topics = "com.ng.vela.even.card_verified")
+    public void consume(String cardCache) {
+        System.out.println(cardCache);
+    }
+
 }

@@ -3,10 +3,12 @@ package com.bankwithmint.service;
 import com.bankwithmint.model.BinListResponse;
 import com.bankwithmint.model.CardCache;
 import com.bankwithmint.repository.CardCacheRepository;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,6 +27,11 @@ public class CardCacheService {
     @Autowired
     StatService statService;
 
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    String TOPICS = "com.ng.vela.even.card_verified";
+
     RestTemplate restTemplate = new RestTemplate();
 
     /**
@@ -36,17 +43,19 @@ public class CardCacheService {
      * @param cardNumber
      * @return
      */
-    public CardCache verifyCard(String cardNumber) {
+    public CardCache verifyCard(String cardNumber) throws JsonProcessingException {
         statService.logCardHit(cardNumber);
         Optional<CardCache> cachedCard = cardCacheRepository.findByCardNumber(cardNumber);
         if (!cachedCard.isPresent()) {
             CardCache cardCache = fromBinListApi(cardNumber);
             if (cardCache != null) {
                 cardCacheRepository.save(cardCache);
+                publishToKafka(cardCache);
                 return cardCache;
             }
             return null;
         }
+        publishToKafka(cachedCard.get());
         return cachedCard.get();
     }
 
@@ -67,6 +76,13 @@ public class CardCacheService {
             cardCache.setBank(response.getBody().getBank().getName());
         }
         return cardCache;
+    }
+
+    // @Async not working
+    public void publishToKafka(CardCache cardCache) throws JsonProcessingException {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(cardCache);
+        new Thread(() -> kafkaTemplate.send(TOPICS, json)).start();
     }
 
 }

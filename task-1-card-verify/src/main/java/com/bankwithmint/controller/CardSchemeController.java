@@ -6,6 +6,7 @@ import com.bankwithmint.model.SingleResponse;
 import com.bankwithmint.model.Stat;
 import com.bankwithmint.service.CardCacheService;
 import com.bankwithmint.service.StatService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,23 +25,17 @@ import java.util.List;
 public class CardSchemeController {
 
     @Autowired
-    private KafkaTemplate<String, CardCache> kafkaTemplate;
-
-    String TOPICS = "com.ng.vela.even.card_verified";
-
-    @Autowired
     CardCacheService cardCacheService;
 
     @Autowired
     StatService statService;
 
     @RequestMapping(value = "/verify/{cardNumber}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> verifyCard(@PathVariable("cardNumber") String cardNumber) {
+    public ResponseEntity<?> verifyCard(@PathVariable("cardNumber") String cardNumber) throws JsonProcessingException {
         CardCache cardCache = cardCacheService.verifyCard(cardNumber);
         if (cardCache == null) {
             return new ResponseEntity<>(new SingleResponse<>(false, null), HttpStatus.NOT_FOUND);
         }
-        kafkaTemplate.send(TOPICS, cardCache);
         return new ResponseEntity<>(new SingleResponse<>(true, cardCache), HttpStatus.OK);
     }
 
