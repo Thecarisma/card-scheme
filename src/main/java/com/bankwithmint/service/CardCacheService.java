@@ -46,6 +46,7 @@ public class CardCacheService {
     }
 
     private CardCache fromBinListApi(String cardNumber) {
+        CardCache cardCache = null;
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.set("Accept-Version", "3");
@@ -53,7 +54,14 @@ public class CardCacheService {
         HttpEntity<?> entity = new HttpEntity<>(headers);
         String url = "https://lookup.binlist.net/" + cardNumber;
         ResponseEntity<BinListResponse> response  = restTemplate.exchange(url, HttpMethod.GET, entity, BinListResponse.class);
-        return null;
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            cardCache = new CardCache();
+            cardCache.setCardNumber(cardNumber);
+            cardCache.setType(response.getBody().getType());
+            cardCache.setScheme(response.getBody().getScheme());
+            cardCache.setBank(response.getBody().getBank().getName());
+        }
+        return cardCache;
     }
 
 }
